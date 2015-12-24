@@ -1,0 +1,97 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="p3-calendar">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-toolbar {
+          --paper-toolbar-height: 32px;
+          --paper-toolbar-title: {
+              font-size: 32px;
+              margin: 0;
+          };
+      }
+      .calendar-body {
+          background-color: var(--default-secondary-color);
+          padding: 16px;
+      }
+      .date-button {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+      }
+    </style>
+    
+    <iron-ajax auto url="{{monthStartApiUrl}}" handle-as="json" on-response="msResponse"></iron-ajax>
+    <h2 class="page-title">{{greeting}}</h2>
+    <paper-material id="calendar" elevation="1">
+        <paper-toolbar class="tall">
+            <div class="middle title flex">Month</div>
+        </paper-toolbar>
+        <div class="calendar-body">
+            <paper-button class="date-button" raised>83</paper-button>
+        </div>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+      
+      Polymer({
+        is: 'p3-calendar',
+        properties: {
+          greeting: {
+            type: String,
+            value: 'Calendar!',
+            notify: true
+          },
+          daysOfWeek: {
+              type: Object,
+              value: {
+                  "0": "Sunday",
+                  "1": "Monday",
+                  "2": "Tuesday",
+                  "3": "Wednesday",
+                  "4": "Thursday",
+                  "5": "Friday",
+                  "6": "Saturday",
+              },
+              readOnly: true
+          },
+          monthStartApiUrl: {
+              type: String,
+              value: function() {
+                  var tdate = new Date().toJSON();
+                  return "http://localhost:8614/api/calendar/ms/" + tdate;
+              },
+              readOnly: true
+          },
+          monthStart: {
+              type: String,
+              value: function() {
+                  return "";
+              }
+          }
+        },
+        msResponse: function(evt, target) {
+            this.monthStart = this.daysOfWeek[target.response];
+        },
+        ready: function() {
+            
+        }
+      });
+    })();
+  </script>
+
+</dom-module>
